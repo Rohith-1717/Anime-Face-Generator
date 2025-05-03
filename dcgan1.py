@@ -23,11 +23,7 @@ num_epochs = 30
 lr = 0.0001
 beta1 = 0.5
 
-transform = transforms.Compose([
-    transforms.Resize(i_s),
-    transforms.CenterCrop(i_s),
-    transforms.ToTensor(),
-    transforms.Normalize((0.5,)*3, (0.5,)*3)
+transform = transforms.Compose([transforms.Resize(i_s),transforms.CenterCrop(i_s),transforms.ToTensor(),transforms.Normalize((0.5,)*3, (0.5,)*3)
 ])
 
 
@@ -35,10 +31,8 @@ class FlatImageDataset(Dataset):
     def __init__(self, image_dir, transform=None):
         self.image_paths = sorted(glob.glob(os.path.join(image_dir, "*.jpg")))
         self.transform = transform
-
     def __len__(self):
         return len(self.image_paths)
-
     def __getitem__(self, idx):
         image = Image.open(self.image_paths[idx]).convert("RGB")
         if self.transform:
@@ -72,14 +66,10 @@ class Discriminator(nn.Module):
     def __init__(self):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Conv2d(3, 64, 4, 2, 1, bias=False),
-            nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(64, 128, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(128), nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(128, 256, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(256), nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(256, 512, 4, 2, 1, bias=False),
-            nn.BatchNorm2d(512), nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(3, 64, 4, 2, 1, bias=False), nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(64, 128, 4, 2, 1, bias=False), nn.BatchNorm2d(128), nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(128, 256, 4, 2, 1, bias=False), nn.BatchNorm2d(256), nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(256, 512, 4, 2, 1, bias=False), nn.BatchNorm2d(512), nn.LeakyReLU(0.2, inplace=True),
             nn.Conv2d(512, 1, 4, 1, 0, bias=False),
             nn.Sigmoid()
         )
@@ -90,12 +80,9 @@ class Discriminator(nn.Module):
 
 generator = Generator().to(device)
 discriminator = Discriminator().to(device)
-
-
 criterion = nn.BCELoss()
 optimizerD = torch.optim.Adam(discriminator.parameters(), lr=lr, betas=(beta1, 0.999))
 optimizerG = torch.optim.Adam(generator.parameters(), lr=lr, betas=(beta1, 0.999))
-
 
 fixed_noise = torch.randn(5, nz, 1, 1, device=device)
 
@@ -123,8 +110,7 @@ for epoch in range(1, num_epochs + 1):
 
         if (i+1) % 100 == 0:
             print(f"(Epoch {epoch} out of {num_epochs}), (Batch {i+1}/{len(dataloader)}), Discriminator Loss -> {lossD_real.item()+lossD_fake.item():.4f}, Generator Loss -> {lossG.item():.4f}")
-
-    
+            
     with torch.no_grad():
         fake = generator(fixed_noise).detach().cpu()
         grid = vutils.make_grid(fake, nrow=5, normalize=True)

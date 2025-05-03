@@ -26,7 +26,7 @@ def lg():
 
 gen = lg()
 st.title("Anime Face Generator") 
-n_imgs = st.number_input("Enter the number of faces you want to generate and click the generate button", min_value=1, max_value=100, value=1, step=1)
+n_imgs = st.number_input("Enter the number of faces you want to generate and click the generate button", min_value=1, max_value=500, value=1, step=1)
 
 if st.button("Generate"):
     noise = torch.randn(n_imgs, nz, 1, 1)
