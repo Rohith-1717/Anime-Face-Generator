@@ -2,7 +2,7 @@ import streamlit as st
 import torch
 import torchvision.utils as vutils
 import matplotlib.pyplot as plt
-from dcgan2 import Generator, nz 
+from Generator_loading import Generator, nz 
 
 st.set_page_config(layout="wide", page_title="Anime Face Generator")
 st.markdown(
