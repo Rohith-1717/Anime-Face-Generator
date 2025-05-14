@@ -55,8 +55,10 @@ if st.button("Generate"):
     with torch.no_grad():
         fake = gen(noise).detach().cpu()
     grid = vutils.make_grid(fake, nrow=min(n_imgs, 5), normalize=True)
-    fig, ax = plt.subplots(figsize=(min(n_imgs, 5) * 1.5, (n_imgs // 5 + 1) * 1.5))
+    fig, ax = plt.subplots(figsize=(min(n_imgs, 5) * 1.0, (n_imgs // 5 + 1) * 1.0))
     ax.imshow(grid.permute(1, 2, 0))
     ax.axis("off")
     fig.patch.set_facecolor("none")
     st.pyplot(fig)
+
+
