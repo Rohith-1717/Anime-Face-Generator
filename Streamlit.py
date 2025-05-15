@@ -17,7 +17,6 @@ st.markdown(
     <style>
     .stApp {{background-image: url("data:image/jpg;base64,{bg_image_base64}"); background-size: cover;
         background-position: center; background-repeat: no-repeat; }}
-
     .custom-title {{ background: linear-gradient(135deg, #ff66cc, #ff1493, #ffc0cb);
         color: white; font-size: 2.5em; text-align: center; padding: 8px 16px; border-radius: 12px;
         display: inline-block; margin-bottom: 25px; font-weight: bold;
@@ -34,9 +33,7 @@ st.markdown(
         position: relative; overflow: hidden; transition: 0.3s ease-in-out; }}
 
     .stButton>button::before {{content: '';
-        position: absolute; top: 0;
-        left: -75%; width: 50%;
-        height: 100%;
+        position: absolute; top: 0;left: -75%; width: 50%; height: 100%;
         background: linear-gradient(120deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.2) 100%);
         transform: skewX(-20deg); }}
 
@@ -44,8 +41,6 @@ st.markdown(
         transition: left 0.7s ease-in-out; }}
 
     .stButton>button:hover {{color: white !important;}}
-
-
     .stNumberInput>div>input {{ background-color: #2f3136;
         color: white; border-radius: 8px;
         border: none; padding: 10px; }}

@@ -23,12 +23,8 @@ num_epochs = 80
 lr = 0.00005  
 b1 = 0.5
 
-transform = transforms.Compose([
-    transforms.Resize(i_s),
-    transforms.CenterCrop(i_s),
-    transforms.ToTensor(),
-    transforms.Normalize((0.5,)*3, (0.5,)*3)
-])
+transform = transforms.Compose([transforms.Resize(i_s),transforms.CenterCrop(i_s),
+    transforms.ToTensor(),transforms.Normalize((0.5,)*3, (0.5,)*3)])
 
 
 class FlatImageDataset(Dataset):
@@ -63,11 +59,11 @@ class Generator(nn.Module):
     def __init__(self):
         super().__init__()
         self.net = nn.Sequential(
-            nn.ConvTranspose2d(nz, 512, 4, 1, 0, bias=False),nn.BatchNorm2d(512), nn.ReLU(True),
-            nn.ConvTranspose2d(512, 256, 4, 2, 1, bias=False),nn.BatchNorm2d(256), nn.ReLU(True),
-            nn.ConvTranspose2d(256, 128, 4, 2, 1, bias=False),nn.BatchNorm2d(128), nn.ReLU(True),
-            nn.ConvTranspose2d(128, 64, 4, 2, 1, bias=False), nn.BatchNorm2d(64), nn.ReLU(True),
-            nn.ConvTranspose2d(64, 3, 4, 2, 1, bias=False),
+            nn.ConvTranspose2d(nz,512,4,1,0,bias=False),nn.BatchNorm2d(512), nn.ReLU(True),
+            nn.ConvTranspose2d(512,256,4,2,1,bias=False),nn.BatchNorm2d(256), nn.ReLU(True),
+            nn.ConvTranspose2d(256,128,4,2,1,bias=False),nn.BatchNorm2d(128), nn.ReLU(True),
+            nn.ConvTranspose2d(128,64,4,2,1,bias=False), nn.BatchNorm2d(64), nn.ReLU(True),
+            nn.ConvTranspose2d(64,3,4,2,1,bias=False),
             nn.Tanh()
         )
 
@@ -78,11 +74,11 @@ class Discriminator(nn.Module):
     def __init__(self):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Conv2d(3, 64, 4, 2, 1, bias=False), nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(64, 128, 4, 2, 1, bias=False), nn.BatchNorm2d(128), nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(128, 256, 4, 2, 1, bias=False), nn.BatchNorm2d(256), nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(256, 512, 4, 2, 1, bias=False), nn.BatchNorm2d(512), nn.LeakyReLU(0.2, inplace=True),
-            nn.Conv2d(512, 1, 4, 1, 0, bias=False),
+            nn.Conv2d(3,64,4,2,1,bias=False), nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(64,128,4,2,1,bias=False), nn.BatchNorm2d(128), nn.LeakyReLU(0.2,inplace=True),
+            nn.Conv2d(128,256,4,2,1,bias=False), nn.BatchNorm2d(256), nn.LeakyReLU(0.2,inplace=True),
+            nn.Conv2d(256,512,4,2,1,bias=False), nn.BatchNorm2d(512), nn.LeakyReLU(0.2,inplace=True),
+            nn.Conv2d(512,1,4,1,0,bias=False),
             nn.Sigmoid()
         )
 
@@ -91,10 +87,8 @@ class Discriminator(nn.Module):
 
 generator = Generator().to(device)
 discriminator = Discriminator().to(device)
-
 generator.apply(wit)
 discriminator.apply(wit)
-
 criterion = nn.BCELoss()
 optimizerD = torch.optim.Adam(discriminator.parameters(), lr=lr, betas=(b1, 0.999))
 optimizerG = torch.optim.Adam(generator.parameters(), lr=lr, betas=(b1, 0.999))
@@ -118,7 +112,6 @@ for epoch in range(1, num_epochs + 1):
         lossD_fake = criterion(output_fake, fake_labels)
         lossD_fake.backward()
         optimizerD.step()
-
         
         for _ in range(2):  
             generator.zero_grad()
