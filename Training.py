@@ -27,7 +27,7 @@ transform = transforms.Compose([transforms.Resize(i_s),transforms.CenterCrop(i_s
     transforms.ToTensor(),transforms.Normalize((0.5,)*3, (0.5,)*3)])
 
 
-class FlatImageDataset(Dataset):
+class fid(Dataset):
     def __init__(self, image_dir, transform=None):
         self.image_paths = sorted(glob.glob(os.path.join(image_dir, "*.jpg")))
         self.transform = transform
@@ -42,7 +42,7 @@ class FlatImageDataset(Dataset):
         return image
 
 dataset_path = "/kaggle/input/animefacedataset/images"
-dataset = FlatImageDataset(dataset_path, transform)
+dataset = fid(dataset_path, transform)
 dataloader = DataLoader(dataset, batch_size=128, shuffle=True, num_workers=4)
 
 print(f"Using {len(dataset)} images.")
