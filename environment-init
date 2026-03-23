@@ -1,0 +1,169 @@
+import sys
+import subprocess
+import importlib
+import os
+import platform
+import time
+
+def install_package(pkg):
+    subprocess.call([sys.executable, "-m", "pip", "install", pkg])
+
+def check_and_install(pkg):
+    try:
+        importlib.import_module(pkg)
+        print(f" Ok: {pkg}")
+    except:
+        print(f" Installing: {pkg}")
+        install_package(pkg)
+
+def setup_packages():
+    print("[Dependencies]")
+    required = ["torch", "torchvision", "numpy", "matplotlib",
+        "pandas", "scipy","tqdm", "Pillow"]
+    for pkg in required:
+        check_and_install(pkg)
+    print()
+
+def check_gpu():
+    print("[GPU]")
+    try:
+        import torch
+        if torch.cuda.is_available():
+            print(" CUDA : Available")
+            print(f" Device : {torch.cuda.get_device_name(0)}")
+            print(f" GPU Count : {torch.cuda.device_count()}")
+            start = time.time()
+            x = torch.rand(1200, 1200).cuda()
+            y = torch.matmul(x, x)
+            torch.cuda.synchronize()
+            print(f"GPU Test -> Success ({time.time() - start:.4f}s)")
+        else:
+            print("CUDA -> Not available")
+    except:
+        print(" PyTorch not properly installed")
+
+    print()
+
+def check_cpu():
+    print("[CPU Test]")
+    start = time.time()
+    total = 0
+    for i in range(1000000):
+        total += i
+    print(f" CPU computation time: {time.time() - start:.4f}s\n")
+
+def check_dataset():
+    print("[Dataset]")
+    dataset_path = "data"
+    if not os.path.exists(dataset_path):
+        print("Dataset folder not found, so it is being created->")
+        os.makedirs(dataset_path)
+    else:
+        print("Dataset folder exists")
+    files = os.listdir(dataset_path)
+    print(f"Files in dataset folder : {len(files)}")
+
+    if len(files) == 0:
+        print("Warning -> Dataset folder is empty")
+    print()
+
+def create_dirs():
+    print("[Directories]")
+    dirs = ["outputs","models", "logs","checkpoints", "samples"]
+    for d in dirs:
+        if not os.path.exists(d):
+            os.makedirs(d)
+            print(f"Created: {d}")
+        else:
+            print(f"Exists: {d}")
+
+    print()
+
+def check_disk_space():
+    print("[Disk Space]")
+    stat = os.statvfs(".")
+    free = stat.f_bavail*stat.f_frsize
+    total = stat.f_blocks*stat.f_frsize
+    free_gb = free/(1024**3)
+    total_gb = total/(1024**3)
+    print(f"Total : {total_gb:.2f} GB")
+    print(f"Free : {free_gb:.2f} GB")
+    if free_gb < 2:
+        print(" Warning : Low disk space")
+    print()
+
+def check_permissions():
+    print("[File Permissions]")
+    try:
+        test_file = "permission_test.txt"
+        with open(test_file, "w") as f:
+            f.write("test")
+        os.remove(test_file)
+        print(" Write permission OK")
+    except:
+        print(" Write permission failed")
+    print()
+
+def check_environment():
+    print("[Environment Variables]")
+    if "PATH" in os.environ:
+        print("Path is Fine")
+    else:
+        print("Path is Missing")
+    if "HOME" in os.environ:
+        print("Home is Fine")
+    else:
+        print("Home is Missing")
+    print()
+
+def check_pip():
+    print("[Pip]")
+    try:
+        out = subprocess.check_output([sys.executable, "-m", "pip", "--version"])
+        print(out.decode().strip())
+    except:
+        print(" pip not found")
+    print()
+
+def check_internet():
+    print("[Internet]")
+    try:
+        subprocess.check_output(["ping", "-c", "1", "8.8.8.8"])
+        print(" Internet connectivity OK")
+    except:
+        print(" No internet connection")
+    print()
+
+def generate_config():
+    print("[Config]")
+    config_file = "config.txt"
+    if not os.path.exists(config_file):
+        with open(config_file, "w") as f:
+            f.write("batch_size=64\n")
+            f.write("epochs=50\n")
+            f.write("learning_rate=0.0002\n")
+        print(" Created default config.txt")
+    else:
+        print(" Config file exists")
+
+    print()
+
+def main():
+    print("PixelFlow Local Setup\n")
+    print("[System]")
+    print(f" OS : {platform.system()}")
+    print(f" Machine : {platform.machine()}\n")
+    setup_packages()
+    check_gpu()
+    check_cpu()
+    check_dataset()
+    create_dirs()
+    check_disk_space()
+    check_permissions()
+    check_environment()
+    check_pip()
+    check_internet()
+    generate_config()
+    print("Setup is complete, begin training.\n")
+if __name__ == "__main__":
+    main()
