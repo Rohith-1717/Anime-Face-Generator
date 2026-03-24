@@ -5,23 +5,23 @@ import os
 import platform
 import time
 
-def install_package(pkg):
+def packageinstall(pkg):
     subprocess.call([sys.executable, "-m", "pip", "install", pkg])
 
-def check_and_install(pkg):
+def CheckPlusInstall(pkg):
     try:
         importlib.import_module(pkg)
         print(f" Ok: {pkg}")
     except:
         print(f" Installing: {pkg}")
-        install_package(pkg)
+        packageinstall(pkg)
 
 def setup_packages():
     print("[Dependencies]")
     required = ["torch", "torchvision", "numpy", "matplotlib",
         "pandas", "scipy","tqdm", "Pillow"]
     for pkg in required:
-        check_and_install(pkg)
+        CheckPlusInstall(pkg)
     print()
 
 def check_gpu():
@@ -29,9 +29,9 @@ def check_gpu():
     try:
         import torch
         if torch.cuda.is_available():
-            print(" CUDA : Available")
-            print(f" Device : {torch.cuda.get_device_name(0)}")
-            print(f" GPU Count : {torch.cuda.device_count()}")
+            print("CUDA is Available")
+            print(f"Device is {torch.cuda.get_device_name(0)}")
+            print(f"GPU Count is {torch.cuda.device_count()}")
             start = time.time()
             x = torch.rand(1200, 1200).cuda()
             y = torch.matmul(x, x)
@@ -40,7 +40,7 @@ def check_gpu():
         else:
             print("CUDA -> Not available")
     except:
-        print(" PyTorch not properly installed")
+        print("PyTorch is not properly installed")
 
     print()
 
@@ -50,7 +50,7 @@ def check_cpu():
     total = 0
     for i in range(1000000):
         total += i
-    print(f" CPU computation time: {time.time() - start:.4f}s\n")
+    print(f" CPU computation time: {time.time()-start:.4f}s\n")
 
 def check_dataset():
     print("[Dataset]")
@@ -89,7 +89,7 @@ def check_disk_space():
     print(f"Total : {total_gb:.2f} GB")
     print(f"Free : {free_gb:.2f} GB")
     if free_gb < 2:
-        print(" Warning : Low disk space")
+        print("Warning-> Disk space is pretty low")
     print()
 
 def check_permissions():
@@ -99,9 +99,9 @@ def check_permissions():
         with open(test_file, "w") as f:
             f.write("test")
         os.remove(test_file)
-        print(" Write permission OK")
+        print("Write permission OK")
     except:
-        print(" Write permission failed")
+        print("Write permission failed")
     print()
 
 def check_environment():
@@ -119,19 +119,19 @@ def check_environment():
 def check_pip():
     print("[Pip]")
     try:
-        out = subprocess.check_output([sys.executable, "-m", "pip", "--version"])
+        out = subprocess.check_output([sys.executable,"-m", "pip","--version"])
         print(out.decode().strip())
     except:
-        print(" pip not found")
+        print("pip not found :(")
     print()
 
 def check_internet():
     print("[Internet]")
     try:
-        subprocess.check_output(["ping", "-c", "1", "8.8.8.8"])
-        print(" Internet connectivity OK")
+        subprocess.check_output(["ping", "-c","1", "8.8.8.8"])
+        print("Internet connectivity OK")
     except:
-        print(" No internet connection")
+        print("No internet connection")
     print()
 
 def generate_config():
@@ -150,9 +150,6 @@ def generate_config():
 
 def main():
     print("PixelFlow Local Setup\n")
-    print("[System]")
-    print(f" OS : {platform.system()}")
-    print(f" Machine : {platform.machine()}\n")
     setup_packages()
     check_gpu()
     check_cpu()
@@ -164,6 +161,6 @@ def main():
     check_pip()
     check_internet()
     generate_config()
-    print("Setup is complete, begin training.\n")
+    print("Setup is complete, begin the training process\n")
 if __name__ == "__main__":
     main()
